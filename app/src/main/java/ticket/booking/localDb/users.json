@@ -1,0 +1,29 @@
+[
+  {
+    "user_id": "abcdef",
+    "name": "Abhinav Kaushik",
+    "hashed_password": "12345",
+    "tickets_booked": [
+      {
+        "source": "Sultanpur",
+        "destination": "Ghaziabad",
+        "date_of_travel": "2025-10-16T20:30:00Z",
+        "train": {
+          "train_id": "ghijk",
+          "train_no": "223055",
+          "seats": [
+            [0,0,0,0,0,0],
+            [0,0,0,0,0,0],
+            [0,0,0,0,0,0],
+            [0,0,0,0,0,0]
+          ],
+          "stations": {
+            "Sultanpur": "20:30:00",
+            "Lucknow": "20:30:00",
+            "Ghaziabad": "20:30:00"
+          }
+        }
+      }
+    ]
+  }
+]
