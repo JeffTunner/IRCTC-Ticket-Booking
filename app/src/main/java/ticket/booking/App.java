@@ -1,5 +1,5 @@
 
-package org.example;
+package ticket.booking;
 
 public class App {
     public String getGreeting() {
