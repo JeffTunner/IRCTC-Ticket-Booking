@@ -8,11 +8,7 @@ import ticket.booking.utils.UserServiceUtil;
 
 import java.io.IOException;
 import java.sql.Time;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
 
 public class App {
 
@@ -30,6 +26,8 @@ public class App {
 
         Train trainSelectedForBooking = null;
         boolean trainSelected = false;
+        String source = null;
+        String destination = null;
 
         while (option!=7) {
             System.out.println("Choose option");
@@ -55,9 +53,16 @@ public class App {
                     String nameToLogin = sc.next();
                     System.out.println("Enter the password to Login");
                     String passwordToLogin = sc.next();
-                    User userToLogin = new User(nameToLogin, passwordToLogin, UserServiceUtil.hashedPassword(passwordToLogin), new ArrayList<>(), UUID.randomUUID().toString());
+                    User tempUser = new User(nameToLogin, passwordToLogin, UserServiceUtil.hashedPassword(passwordToLogin), new ArrayList<>(), UUID.randomUUID().toString());
                     try {
-                        userBookingService = new UserBookingService(userToLogin);
+                        userBookingService = new UserBookingService(tempUser);
+                        User loggedInUser = userBookingService.loginUser();
+                        if(loggedInUser!=null) {
+                            userBookingService.setUser(loggedInUser);
+                            System.out.println("Log In Successful!!!");
+                        } else {
+                            System.out.println("Invalid username or Password!");
+                        }
                     } catch (IOException e) {
                         return;
                     }
@@ -68,9 +73,9 @@ public class App {
                     break;
                 case 4:
                     System.out.println("Type your source station");
-                    String source = sc.next();
+                    source = sc.next();
                     System.out.println("Type your destination station");
-                    String destination = sc.next();
+                    destination = sc.next();
                     List<Train> trains = userBookingService.getTrains(source, destination);
                     if(trains.isEmpty()){
                         System.out.println("No trains available.");
@@ -112,7 +117,8 @@ public class App {
                     System.out.println("Enter the column");
                     int col = sc.nextInt();
                     System.out.println("Booking your seat...");
-                    Boolean booked = userBookingService.bookTrainSeat(trainSelectedForBooking, row, col);
+                    String dateOfTravel = new java.text.SimpleDateFormat("yyyy-MM-dd").format(new Date());
+                    Boolean booked = userBookingService.bookTrainSeat(trainSelectedForBooking, row, col, source, destination, dateOfTravel);
                     if(booked.equals(Boolean.TRUE)) {
                         System.out.println("Booked! Enjoy your journey!!!");
                     } else {
@@ -123,12 +129,7 @@ public class App {
                     System.out.println("Select to cancel your bookings...");
                     System.out.println("Enter the ticket ID to cancel: ");
                     String ticketId = sc.next();
-                    Boolean cancelledTicket = userBookingService.cancelBooking(ticketId);
-                    if(cancelledTicket.equals(Boolean.TRUE)){
-                        System.out.println("Ticket with ID " + ticketId + " has been canceled.");
-                    } else {
-                        System.out.println("No ticket found with ID " + ticketId);
-                    }
+                    userBookingService.cancelBooking(ticketId);
                     break;
                 default:
                     System.out.println("Please select only the options given to you.");
