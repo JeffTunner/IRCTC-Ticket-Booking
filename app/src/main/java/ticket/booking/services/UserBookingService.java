@@ -2,6 +2,7 @@ package ticket.booking.services;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonParser;
 import ticket.booking.entities.Ticket;
 import ticket.booking.entities.Train;
 import ticket.booking.entities.User;
@@ -10,6 +11,7 @@ import ticket.booking.utils.UserServiceUtil;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +38,13 @@ public class UserBookingService {
 
     private void loadUserListFromFile() throws IOException {
         File users = new File(USERS_PATH);
-        userList = objectMapper.readValue(users, new TypeReference<List<User>>() {});
+        try {
+            userList = objectMapper.readValue(users, new TypeReference<List<User>>() {});
+            System.out.println("DEBUG: Successfully loaded " + userList.size() + " users.");
+        } catch (Exception e) {
+            System.out.println("DEBUG: Error while reading JSON file:");
+            e.printStackTrace();
+        }
     }
 
     public Boolean loginUser() {
@@ -99,6 +107,9 @@ public class UserBookingService {
     }
 
     public List<List<Integer>> fetchSeats(Train train) {
+        if(train.getSeats() == null){
+            return new ArrayList<>();
+        }
         return train.getSeats();
     }
 

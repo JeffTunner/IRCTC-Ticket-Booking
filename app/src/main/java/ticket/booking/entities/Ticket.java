@@ -1,7 +1,13 @@
 package ticket.booking.entities;
 
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
+import java.sql.Date;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonNaming(com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class Ticket {
 
     private String ticketId;
