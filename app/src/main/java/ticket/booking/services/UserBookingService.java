@@ -12,10 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 
 public class UserBookingService {
 
@@ -47,11 +44,11 @@ public class UserBookingService {
         }
     }
 
-    public Boolean loginUser() {
+    public User loginUser() {
         Optional<User> foundUser = userList.stream().filter(user1 -> {
             return user1.getName().equals(user.getName()) && UserServiceUtil.checkPassword(user.getPassword(), user1.getHashedPassword());
         }).findFirst();
-        return foundUser.isPresent();
+        return foundUser.orElse(null);
     }
 
     public Boolean signUp(User user1) {
@@ -69,6 +66,14 @@ public class UserBookingService {
         objectMapper.writeValue(usersFile, userList);
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public void fetchBooking() {
         Optional<User> userFetched = userList.stream().filter(user1 -> {
             return user1.getName().equals(user.getName()) && UserServiceUtil.checkPassword(user.getPassword(), user1.getHashedPassword());
@@ -78,7 +83,7 @@ public class UserBookingService {
         }
     }
 
-    public boolean cancelBooking(String ticketId) {
+    public boolean cancelBooking(String ticketId) throws IOException {
 
         if(ticketId == null || ticketId.isEmpty()) {
             System.out.println("Ticket ID cannot be empty!");
@@ -87,7 +92,6 @@ public class UserBookingService {
 
         String finalTicketId1 = ticketId;
         boolean removed = user.getTicketsBooked().removeIf(ticket -> ticket.getTicketId().equals(finalTicketId1));
-
         if(removed) {
             System.out.println("Ticket with ID " + ticketId + " has been canceled.");
             return Boolean.TRUE;
@@ -113,7 +117,7 @@ public class UserBookingService {
         return train.getSeats();
     }
 
-    public boolean bookTrainSeat(Train train, int row, int seat) {
+    public boolean bookTrainSeat(Train train, int row, int seat, String source, String destination, String dateOfTravel) {
         try {
             TrainService trainService = new TrainService();
             List<List<Integer>> seats = train.getSeats();
@@ -122,6 +126,10 @@ public class UserBookingService {
                     seats.get(row).set(seat, 1);
                     train.setSeats(seats);
                     trainService.addTrain(train);
+
+                    Ticket ticket = new Ticket(UUID.randomUUID().toString(), user.getUserId(), source, destination, dateOfTravel, train);
+                    user.getTicketsBooked().add(ticket);
+                    saveUserListToFile();
                     return true;
                 } else {
                     return false;
