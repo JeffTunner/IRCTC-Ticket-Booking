@@ -7,7 +7,12 @@ import ticket.booking.services.UserBookingService;
 import ticket.booking.utils.UserServiceUtil;
 
 import java.io.IOException;
-import java.util.*;
+import java.sql.Time;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.UUID;
 
 public class App {
 
@@ -22,6 +27,10 @@ public class App {
             System.out.println("There is Something Wrong!");
             return;
         }
+
+        Train trainSelectedForBooking = null;
+        boolean trainSelected = false;
+
         while (option!=7) {
             System.out.println("Choose option");
             System.out.println("1. Sign up");
@@ -32,7 +41,6 @@ public class App {
             System.out.println("6. Cancel my Booking");
             System.out.println("7. Exit the App");
             option = sc.nextInt();
-            Train trainSelectedForBooking = new Train();
             switch (option) {
                 case 1:
                     System.out.println("Enter the username to signup");
@@ -64,17 +72,32 @@ public class App {
                     System.out.println("Type your destination station");
                     String destination = sc.next();
                     List<Train> trains = userBookingService.getTrains(source, destination);
+                    if(trains.isEmpty()){
+                        System.out.println("No trains available.");
+                        break;
+                    }
                     int index = 1;
                     for (Train t: trains){
                         System.out.println(index+" Train id : "+t.getTrainId());
                         for (Map.Entry<String, String> entry: t.getStationTimes().entrySet()){
                             System.out.println("station "+entry.getKey()+" time: "+entry.getValue());
                         }
+                        index++;
                     }
                     System.out.println("Select a train by typing 1,2,3...");
-                    trainSelectedForBooking = trains.get(sc.nextInt());
+                    int selectedIndex = sc.nextInt() - 1;
+                    if(selectedIndex < 0 || selectedIndex >= trains.size()){
+                        System.out.println("Invalid selection!");
+                        break;
+                    }
+                    trainSelectedForBooking = trains.get(selectedIndex);
+                    trainSelected = true;
                     break;
                 case 5:
+                    if (trainSelectedForBooking == null) {
+                        System.out.println("Please search and select a train first!");
+                        break;
+                    }
                     System.out.println("Select a seat out of these seats: ");
                     List<List<Integer>> seats = userBookingService.fetchSeats(trainSelectedForBooking);
                     for (List<Integer> row: seats){
