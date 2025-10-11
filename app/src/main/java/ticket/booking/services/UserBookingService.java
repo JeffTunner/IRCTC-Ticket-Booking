@@ -25,12 +25,12 @@ public class UserBookingService {
 
     private static final String USERS_PATH = "app/src/main/java/ticket/booking/localDb/users.json";
 
-    private UserBookingService(User user1) throws IOException {
+    public UserBookingService(User user1) throws IOException {
         this.user = user1;
         loadUserListFromFile();
     }
 
-    private UserBookingService() throws IOException {
+    public UserBookingService() throws IOException {
         loadUserListFromFile();
     }
 
@@ -70,24 +70,21 @@ public class UserBookingService {
         }
     }
 
-    public boolean cancelBooking() {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Enter the tickedId to cancel: ");
-        String tickedId = sc.next();
+    public boolean cancelBooking(String ticketId) {
 
-        if(tickedId == null || tickedId.isEmpty()) {
+        if(ticketId == null || ticketId.isEmpty()) {
             System.out.println("Ticket ID cannot be empty!");
             return Boolean.FALSE;
         }
 
-        String finalTicketId1 = tickedId;
+        String finalTicketId1 = ticketId;
         boolean removed = user.getTicketsBooked().removeIf(ticket -> ticket.getTicketId().equals(finalTicketId1));
 
         if(removed) {
-            System.out.println("Ticket with ID " + tickedId + " has been canceled.");
+            System.out.println("Ticket with ID " + ticketId + " has been canceled.");
             return Boolean.TRUE;
         } else {
-            System.out.println("No ticket found with ID " + tickedId);
+            System.out.println("No ticket found with ID " + ticketId);
             return Boolean.FALSE;
         }
     }
