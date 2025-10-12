@@ -93,6 +93,7 @@ public class UserBookingService {
         String finalTicketId1 = ticketId;
         boolean removed = user.getTicketsBooked().removeIf(ticket -> ticket.getTicketId().equals(finalTicketId1));
         if(removed) {
+            saveUserListToFile();
             System.out.println("Ticket with ID " + ticketId + " has been canceled.");
             return Boolean.TRUE;
         } else {
