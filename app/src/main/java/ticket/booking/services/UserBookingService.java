@@ -37,9 +37,7 @@ public class UserBookingService {
         File users = new File(USERS_PATH);
         try {
             userList = objectMapper.readValue(users, new TypeReference<List<User>>() {});
-            System.out.println("DEBUG: Successfully loaded " + userList.size() + " users.");
         } catch (Exception e) {
-            System.out.println("DEBUG: Error while reading JSON file:");
             e.printStackTrace();
         }
     }
