@@ -30,7 +30,7 @@ public class App {
         String destination = null;
 
         while (option!=7) {
-            System.out.println("Choose option");
+            System.out.println("Please choose from the options below what you want to do: ");
             System.out.println("1. Sign up");
             System.out.println("2. Login");
             System.out.println("3. Fetch Bookings");
@@ -46,7 +46,13 @@ public class App {
                     System.out.println("Enter the password to signup");
                     String passwordToSignUp = sc.next();
                     User userToSignup = new User(nameToSignUp, passwordToSignUp, UserServiceUtil.hashedPassword(passwordToSignUp), new ArrayList<>(), UUID.randomUUID().toString());
-                    userBookingService.signUp(userToSignup);
+                    boolean isSignUp = userBookingService.signUp(userToSignup);
+                    if(isSignUp) {
+                        System.out.println("You have successfully Signed  Up!");
+                        System.out.println("Please Login to continue for further requests.");
+                    } else {
+                        System.out.println("Sign Up Failed!");
+                    }
                     break;
                 case 2:
                     System.out.println("Enter the username to Login");
@@ -60,6 +66,7 @@ public class App {
                         if(loggedInUser!=null) {
                             userBookingService.setUser(loggedInUser);
                             System.out.println("Log In Successful!!!");
+                            System.out.println("Please choose further options according to your requirements.");
                         } else {
                             System.out.println("Invalid username or Password!");
                         }
