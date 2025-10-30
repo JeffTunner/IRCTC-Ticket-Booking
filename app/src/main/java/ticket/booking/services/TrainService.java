@@ -15,7 +15,7 @@ import java.util.stream.IntStream;
 
 public class TrainService {
 
-    private List<Train> trainList;
+    private static List<Train> trainList;
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -43,7 +43,7 @@ public class TrainService {
         }
     }
 
-    private void saveTrainListToFile() throws IOException {
+    public static void saveTrainListToFile() throws IOException {
         try {
             File trainFile = new File(TRAIN_DB_PATH);
             objectMapper.writeValue(trainFile, trainList);
